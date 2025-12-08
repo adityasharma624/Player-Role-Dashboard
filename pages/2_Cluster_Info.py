@@ -99,13 +99,10 @@ def load_data():
 
 players_df, centroids_df, centroids_dict = load_data()
 
-# Pages heading
-st.markdown("<h1 style='color: #1f77b4; margin-bottom: 0.5rem; font-size: 1.8rem;'>Pages</h1>", unsafe_allow_html=True)
-
 # Title
 st.markdown("""
-    <div style='text-align: center; margin-bottom: 1rem;'>
-        <h2 style='color: #1f77b4; margin-bottom: 0.3rem; font-size: 1.5rem;'>📊 Cluster Information & Role Documentation</h2>
+    <div style='margin-bottom: 1rem;'>
+        <h1 style='color: #1f77b4; margin-bottom: 0.3rem; font-size: 1.8rem;'>📊 Cluster Information & Role Documentation</h1>
         <p style='color: #666; font-size: 0.95rem;'>Learn about each player role cluster and their characteristics</p>
     </div>
     """, unsafe_allow_html=True)

@@ -210,12 +210,9 @@ selected_clusters = st.sidebar.multiselect(
 # Filter players by selected clusters
 filtered_players_df = players_df[players_df['role_cluster'].isin(selected_clusters)]
 
-# Pages heading
-st.markdown("<h1 style='color: #1f77b4; margin-bottom: 0.5rem; font-size: 1.8rem;'>Pages</h1>", unsafe_allow_html=True)
-
 # Main title and subtitle
-st.markdown("""<div style='text-align: center; margin-bottom: 0.5rem;'>
-    <h2 style='color: #1f77b4; margin-bottom: 0.2rem; font-size: 1.5rem;'>⚽ Player Role Dashboard</h2>
+st.markdown("""<div style='margin-bottom: 0.5rem;'>
+    <h1 style='color: #1f77b4; margin-bottom: 0.2rem; font-size: 1.8rem;'>⚽ Player Role Dashboard</h1>
     <p style='color: #666; font-size: 0.95rem; margin-bottom: 0.3rem;'>Explore player roles and clusters in PCA space</p>
     <p style='color: #999; font-size: 0.85rem;'><em>Dataset: FM24 • Filtered: Age ≥ 18 • Current Ability ≥ 120</em></p>
 </div>""", unsafe_allow_html=True)
