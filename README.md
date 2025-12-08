@@ -2,6 +2,8 @@
 
 An interactive Streamlit dashboard for visualizing and exploring football player role clusters using Principal Component Analysis (PCA) and clustering techniques. Built with Football Manager 24 data, this tool helps analyze player roles, compare attributes, and discover similar players across Europe's top leagues.
 
+### Live Link: https://player-role-dashboard.streamlit.app/
+
 ## 🎯 Features
 
 ### Main Dashboard (`app.py`)
