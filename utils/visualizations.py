@@ -105,15 +105,15 @@ def create_scatter_plot(players_df: pd.DataFrame,
         plot_bgcolor='#f8f9fa',
         paper_bgcolor='white',
         legend=dict(
-            orientation="h",
-            yanchor="top",
-            y=0.99,
-            xanchor="left",
-            x=0.01,
+            orientation="v",
+            yanchor="bottom",
+            y=0.01,
+            xanchor="right",
+            x=0.99,
             bgcolor='rgba(255, 255, 255, 0.95)',
             bordercolor='#1f77b4',
             borderwidth=2,
-            font=dict(size=11)
+            font=dict(size=10)
         ),
         xaxis=dict(
             showgrid=True,
