@@ -51,16 +51,18 @@ def create_scatter_plot(players_df: pd.DataFrame,
             name=f'{cluster_name} (C{cluster_id})',
             marker=dict(
                 color=cluster_colors.get(cluster_id, '#888888'),
-                size=8,
+                size=10,
                 opacity=opacity,
-                line=dict(width=0.5, color='white')
+                line=dict(width=1, color='white'),
+                symbol='circle'
             ),
             text=cluster_data.apply(
                 lambda row: f"<b>{row['Name']}</b><br>Club: {row.get('Club', 'N/A')}<br>Role: {cluster_name}",
                 axis=1
             ),
             hovertemplate='%{text}<extra></extra>',
-            customdata=cluster_data['Name']
+            customdata=cluster_data['Name'],
+            hoverinfo='text'
         ))
     
     # Highlight selected player if provided
@@ -71,14 +73,17 @@ def create_scatter_plot(players_df: pd.DataFrame,
             fig.add_trace(go.Scatter(
                 x=[player_row['pc1']],
                 y=[player_row['pc2']],
-                mode='markers',
+                mode='markers+text',
                 name='Selected Player',
                 marker=dict(
-                    color='yellow',
-                    size=20,
+                    color='gold',
+                    size=25,
                     symbol='star',
-                    line=dict(width=2, color='black')
+                    line=dict(width=2.5, color='#FFD700')
                 ),
+                text=['⭐'],
+                textposition='middle center',
+                textfont=dict(size=16),
                 hovertemplate=f'<b>{selected_player}</b><extra></extra>'
             ))
             
@@ -95,7 +100,7 @@ def create_scatter_plot(players_df: pd.DataFrame,
         hovermode='closest',
         template='plotly_white',
         height=600,
-        font=dict(size=12),
+        font=dict(size=12, family='Arial, sans-serif'),
         margin=dict(l=60, r=40, t=50, b=60),
         plot_bgcolor='#f8f9fa',
         paper_bgcolor='white',
@@ -105,19 +110,35 @@ def create_scatter_plot(players_df: pd.DataFrame,
             y=0.99,
             xanchor="left",
             x=0.01,
-            bgcolor='rgba(255, 255, 255, 0.9)',
-            bordercolor='#e0e0e0',
-            borderwidth=1
+            bgcolor='rgba(255, 255, 255, 0.95)',
+            bordercolor='#1f77b4',
+            borderwidth=2,
+            font=dict(size=11)
         ),
         xaxis=dict(
             showgrid=True,
             gridwidth=1,
-            gridcolor='#f0f0f0'
+            gridcolor='#e8e8e8',
+            zeroline=False,
+            showline=True,
+            linewidth=2,
+            linecolor='#333',
+            mirror=True
         ),
         yaxis=dict(
             showgrid=True,
             gridwidth=1,
-            gridcolor='#f0f0f0'
+            gridcolor='#e8e8e8',
+            zeroline=False,
+            showline=True,
+            linewidth=2,
+            linecolor='#333',
+            mirror=True
+        ),
+        hoverlabel=dict(
+            bgcolor='white',
+            font_size=13,
+            font_family='Arial'
         )
     )
     

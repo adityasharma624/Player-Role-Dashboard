@@ -176,7 +176,7 @@ with col1:
     st.plotly_chart(fig, width='stretch', config={'displayModeBar': True})
     
     # Note about clicking (Plotly click events can be added later)
-    st.markdown("<p style='text-align: center; color: #666; margin-top: 1rem;'>💡 Use the search bar above to find and zoom to a player</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #666; margin-top: 1rem;'>🎯 Hover over clusters to explore • Search above to zoom to a player</p>", unsafe_allow_html=True)
 
 with col2:
     st.markdown("<h2 style='margin-bottom: 1.5rem;'>👤 Player Information</h2>", unsafe_allow_html=True)
