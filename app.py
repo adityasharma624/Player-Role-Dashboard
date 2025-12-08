@@ -61,7 +61,7 @@ selected_clusters = st.sidebar.multiselect(
     "Filter by Cluster",
     options=all_clusters,
     default=all_clusters,
-    format_func=lambda x: f"Cluster {x}"
+    format_func=lambda x: f"{get_cluster_name(x)} (C{x})"
 )
 
 # Filter players by selected clusters
