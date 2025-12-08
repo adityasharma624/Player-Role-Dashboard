@@ -4,6 +4,7 @@ Main Streamlit app for Player Role Dashboard.
 import streamlit as st
 import pandas as pd
 import numpy as np
+import unicodedata
 from utils.data_loader import (
     load_players_data, 
     load_centroids_data, 
@@ -13,6 +14,20 @@ from utils.data_loader import (
 )
 from utils.cluster_mapping import get_cluster_name, get_cluster_description
 from utils.visualizations import create_scatter_plot, create_radar_chart
+
+
+def normalize_text(text):
+    """
+    Normalize text by removing accents and special characters.
+    Converts 'Ødegaard' to 'Odegaard', 'José' to 'Jose', etc.
+    """
+    if pd.isna(text) or text == "":
+        return ""
+    # Normalize unicode characters (NFD = Normalization Form Decomposed)
+    nfd = unicodedata.normalize('NFD', str(text))
+    # Remove combining characters (accents)
+    normalized = ''.join(c for c in nfd if unicodedata.category(c) != 'Mn')
+    return normalized.lower()
 
 
 # Page configuration
@@ -60,6 +75,9 @@ st.markdown("Explore player roles and clusters in PCA space")
 st.subheader("Search Player")
 player_names = sorted(filtered_players_df['Name'].tolist())
 
+# Create normalized search index (name -> normalized_name)
+search_index = {name: normalize_text(name) for name in player_names}
+
 # Text input for search
 search_query = st.text_input(
     "Type player name to search:",
@@ -75,23 +93,25 @@ if 'selected_player' not in st.session_state:
 # Filter and show suggestions
 selected_player_name = None
 if search_query:
-    # Filter names that match the search query (case-insensitive)
-    matching_players = [name for name in player_names if search_query.lower() in name.lower()]
+    # Normalize search query
+    normalized_query = normalize_text(search_query)
+    
+    # Filter names that match the normalized search query
+    matching_players = [
+        name for name in player_names 
+        if normalized_query in search_index[name]
+    ]
     
     if matching_players:
-        # Show autocomplete suggestions
-        if len(matching_players) == 1:
-            # Auto-select if only one match
-            selected_player_name = matching_players[0]
-            st.session_state.selected_player = matching_players[0]
-        else:
-            # Show dropdown with suggestions
-            selected_player_name = st.selectbox(
-                "Select from matches:",
-                options=matching_players,
-                key="player_autocomplete"
-            )
-            st.session_state.selected_player = selected_player_name
+        # Always show dropdown with suggestions (even if only one match)
+        # This makes it clearer what was selected
+        selected_player_name = st.selectbox(
+            f"Select from {len(matching_players)} match{'es' if len(matching_players) > 1 else ''}:",
+            options=matching_players,
+            key="player_autocomplete",
+            index=0  # Auto-select first match
+        )
+        st.session_state.selected_player = selected_player_name
     else:
         st.info(f"No players found matching '{search_query}'")
         st.session_state.selected_player = None
