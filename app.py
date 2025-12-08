@@ -35,7 +35,9 @@ def load_data():
 
 players_df, centroids_df, centroids_dict = load_data()
 
-# Sidebar filters
+# Sidebar title
+st.sidebar.title("⚽ Player Role Dashboard")
+st.sidebar.markdown("---")
 st.sidebar.header("Filters")
 
 # Cluster filter
@@ -54,25 +56,47 @@ filtered_players_df = players_df[players_df['role_cluster'].isin(selected_cluste
 st.title("⚽ Player Role Dashboard")
 st.markdown("Explore player roles and clusters in PCA space")
 
-# Search bar
+# Search bar with autocomplete
 st.subheader("Search Player")
 player_names = sorted(filtered_players_df['Name'].tolist())
 
-# Use selectbox for search with autocomplete-like behavior
-selected_player_name = st.selectbox(
-    "Type or select a player name:",
-    options=[""] + player_names,
-    format_func=lambda x: "Select a player..." if x == "" else x,
-    key="player_search"
+# Text input for search
+search_query = st.text_input(
+    "Type player name to search:",
+    value="",
+    key="player_search_input",
+    placeholder="Start typing a player name..."
 )
 
 # Initialize session state for selected player
 if 'selected_player' not in st.session_state:
     st.session_state.selected_player = None
 
-# Update selected player from search or click
-if selected_player_name:
-    st.session_state.selected_player = selected_player_name
+# Filter and show suggestions
+selected_player_name = None
+if search_query:
+    # Filter names that match the search query (case-insensitive)
+    matching_players = [name for name in player_names if search_query.lower() in name.lower()]
+    
+    if matching_players:
+        # Show autocomplete suggestions
+        if len(matching_players) == 1:
+            # Auto-select if only one match
+            selected_player_name = matching_players[0]
+            st.session_state.selected_player = matching_players[0]
+        else:
+            # Show dropdown with suggestions
+            selected_player_name = st.selectbox(
+                "Select from matches:",
+                options=matching_players,
+                key="player_autocomplete"
+            )
+            st.session_state.selected_player = selected_player_name
+    else:
+        st.info(f"No players found matching '{search_query}'")
+        st.session_state.selected_player = None
+else:
+    st.session_state.selected_player = None
 
 # Main layout: Scatter plot and player card
 col1, col2 = st.columns([2, 1])
