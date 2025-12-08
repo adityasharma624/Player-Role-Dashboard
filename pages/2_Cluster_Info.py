@@ -19,6 +19,57 @@ st.set_page_config(
     layout="wide"
 )
 
+# Custom CSS for consistent styling
+st.markdown("""
+    <style>
+    /* Consistent styling with main page */
+    h1 {
+        color: #1f77b4;
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+    
+    h2 {
+        color: #1f77b4;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #e0e0e0;
+        margin-top: 1.5rem;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+    }
+    
+    h3 {
+        color: #333;
+        margin-top: 1rem;
+        font-weight: 600;
+    }
+    
+    /* Metric styling */
+    [data-testid="metric-container"] {
+        background-color: #f8f9fa;
+        padding: 1rem;
+        border-radius: 8px;
+        border-left: 4px solid #1f77b4;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    /* Tab styling */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 8px;
+    }
+    
+    .stTabs [data-baseweb="tab"] {
+        border-radius: 4px 4px 0 0;
+        padding: 10px 20px;
+    }
+    
+    /* Hide Streamlit menu and footer */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    </style>
+    """, unsafe_allow_html=True)
+
 # Load data (cached)
 @st.cache_data
 def load_data():
@@ -32,8 +83,12 @@ def load_data():
 players_df, centroids_df, centroids_dict = load_data()
 
 # Title
-st.title("📊 Cluster Information & Role Documentation")
-st.markdown("Learn about each player role cluster and their characteristics")
+st.markdown("""
+    <div style='text-align: center; margin-bottom: 2rem;'>
+        <h1 style='color: #1f77b4; margin-bottom: 0.5rem;'>📊 Cluster Information & Role Documentation</h1>
+        <p style='color: #666; font-size: 1.1rem;'>Learn about each player role cluster and their characteristics</p>
+    </div>
+    """, unsafe_allow_html=True)
 
 # Get all clusters
 all_clusters = sorted(players_df['role_cluster'].unique())
@@ -47,8 +102,8 @@ for idx, cluster_id in enumerate(all_clusters):
         cluster_desc = get_cluster_description(cluster_id)
         
         # Header
-        st.header(f"{cluster_name} (Cluster {cluster_id})")
-        st.markdown(f"*{cluster_desc}*")
+        st.markdown(f"<h2 style='color: #1f77b4; margin-top: 0;'>{cluster_name} <span style='color: #999; font-size: 0.8em; font-weight: normal;'>(Cluster {cluster_id})</span></h2>", unsafe_allow_html=True)
+        st.markdown(f"<p style='color: #666; font-size: 1.05rem; font-style: italic; margin-bottom: 1.5rem;'>{cluster_desc}</p>", unsafe_allow_html=True)
         
         # Layout: Two columns
         col1, col2 = st.columns([2, 1])
@@ -65,7 +120,7 @@ for idx, cluster_id in enumerate(all_clusters):
                 attrs_df = attrs_df.sort_values('Z-Score', key=abs, ascending=False)
                 
                 # Show top 5 as metrics
-                st.markdown("**Top 5 Attributes:**")
+                st.markdown("<b style='font-size: 1.1rem; color: #333;'>Top 5 Attributes:</b>", unsafe_allow_html=True)
                 metric_cols = st.columns(5)
                 for i, (attr, z_score) in enumerate(top_attrs[:5]):
                     with metric_cols[i]:
@@ -78,11 +133,12 @@ for idx, cluster_id in enumerate(all_clusters):
             st.divider()
             
             # Top players in cluster
-            st.subheader("Top Players by CA")
+            st.markdown("<h3 style='color: #333; margin-top: 1.5rem;'>⭐ Top Players by CA</h3>", unsafe_allow_html=True)
             cluster_players = players_df[players_df['role_cluster'] == cluster_id].copy()
             top_players = cluster_players.nlargest(10, 'CA')[['Name', 'Club', 'CA', 'PA']]
             
             if not top_players.empty:
+                # Style the dataframe
                 st.dataframe(
                     top_players,
                     width='stretch',
@@ -92,10 +148,11 @@ for idx, cluster_id in enumerate(all_clusters):
                         "Club": st.column_config.TextColumn("Club", width="small"),
                         "CA": st.column_config.NumberColumn("CA", format="%d"),
                         "PA": st.column_config.NumberColumn("PA", format="%d")
-                    }
+                    },
+                    use_container_width=True
                 )
             else:
-                st.write("No players found in this cluster.")
+                st.info("No players found in this cluster.")
         
         with col2:
             # Cluster scatter snippet

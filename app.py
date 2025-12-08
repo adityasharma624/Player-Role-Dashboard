@@ -20,11 +20,48 @@ def normalize_text(text):
     """
     Normalize text by removing accents and special characters.
     Converts 'Ødegaard' to 'Odegaard', 'José' to 'Jose', etc.
+    Handles special cases like Ø, ø, and other non-ASCII characters.
     """
     if pd.isna(text) or text == "":
         return ""
+    
+    text_str = str(text)
+    
+    # Manual mapping for common special characters that don't decompose properly
+    special_char_map = {
+        'Ø': 'O', 'ø': 'o',
+        'Ö': 'O', 'ö': 'o',
+        'Ü': 'U', 'ü': 'u',
+        'Ä': 'A', 'ä': 'a',
+        'Å': 'A', 'å': 'a',
+        'É': 'E', 'é': 'e',
+        'È': 'E', 'è': 'e',
+        'Ê': 'E', 'ê': 'e',
+        'Ë': 'E', 'ë': 'e',
+        'Í': 'I', 'í': 'i',
+        'Ì': 'I', 'ì': 'i',
+        'Î': 'I', 'î': 'i',
+        'Ï': 'I', 'ï': 'i',
+        'Ó': 'O', 'ó': 'o',
+        'Ò': 'O', 'ò': 'o',
+        'Ô': 'O', 'ô': 'o',
+        'Õ': 'O', 'õ': 'o',
+        'Ú': 'U', 'ú': 'u',
+        'Ù': 'U', 'ù': 'u',
+        'Û': 'U', 'û': 'u',
+        'Ç': 'C', 'ç': 'c',
+        'Ñ': 'N', 'ñ': 'n',
+        'Ş': 'S', 'ş': 's',
+        'İ': 'I', 'ı': 'i',
+        'Ğ': 'G', 'ğ': 'g',
+    }
+    
+    # Replace special characters
+    for special, replacement in special_char_map.items():
+        text_str = text_str.replace(special, replacement)
+    
     # Normalize unicode characters (NFD = Normalization Form Decomposed)
-    nfd = unicodedata.normalize('NFD', str(text))
+    nfd = unicodedata.normalize('NFD', text_str)
     # Remove combining characters (accents)
     normalized = ''.join(c for c in nfd if unicodedata.category(c) != 'Mn')
     return normalized.lower()
@@ -55,14 +92,16 @@ st.markdown("""
     h2 {
         color: #1f77b4;
         padding-bottom: 0.5rem;
-        border-bottom: 1px solid #e0e0e0;
+        border-bottom: 2px solid #e0e0e0;
         margin-top: 1.5rem;
         margin-bottom: 0.5rem;
+        font-weight: 600;
     }
     
     h3 {
         color: #333;
         margin-top: 1rem;
+        font-weight: 600;
     }
     
     /* Metric styling */
@@ -71,12 +110,66 @@ st.markdown("""
         padding: 1rem;
         border-radius: 8px;
         border-left: 4px solid #1f77b4;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        transition: transform 0.2s;
+    }
+    
+    [data-testid="metric-container"]:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.15);
     }
     
     /* Improve input spacing */
     .stTextInput, .stSelectbox, .stMultiSelect {
         margin-bottom: 1rem;
     }
+    
+    /* Autocomplete button styling */
+    .stButton > button {
+        border-radius: 6px;
+        border: 1px solid #ddd;
+        transition: all 0.2s;
+        font-weight: 500;
+    }
+    
+    .stButton > button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        border-color: #1f77b4;
+    }
+    
+    /* Sidebar improvements */
+    .css-1d391kg {
+        padding-top: 1rem;
+    }
+    
+    /* Expander styling */
+    .streamlit-expanderHeader {
+        font-weight: 500;
+        color: #1f77b4;
+    }
+    
+    /* Info boxes */
+    .stInfo {
+        border-left: 4px solid #1f77b4;
+        padding: 1rem;
+        border-radius: 4px;
+    }
+    
+    /* Warning boxes */
+    .stWarning {
+        border-left: 4px solid #ff9800;
+    }
+    
+    /* Footer styling */
+    footer {
+        visibility: hidden;
+    }
+    
+    /* Hide Streamlit menu and footer */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
     </style>
     """, unsafe_allow_html=True)
 
@@ -107,11 +200,14 @@ selected_clusters = st.sidebar.multiselect(
 # Filter players by selected clusters
 filtered_players_df = players_df[players_df['role_cluster'].isin(selected_clusters)]
 
+# Pages heading
+st.markdown("<h1 style='color: #1f77b4; margin-bottom: 0.5rem; font-size: 1.8rem;'>Pages</h1>", unsafe_allow_html=True)
+
 # Main title and subtitle
-st.markdown("""<div style='text-align: center; margin-bottom: 1rem;'>
-    <h1 style='color: #1f77b4; margin-bottom: 0.3rem;'>⚽ Player Role Dashboard</h1>
-    <p style='color: #666; font-size: 1.1rem; margin-bottom: 0.5rem;'>Explore player roles and clusters in PCA space</p>
-    <p style='color: #999; font-size: 0.9rem;'><em>Dataset: FM24 • Filtered: Age ≥ 18 • Current Ability ≥ 120</em></p>
+st.markdown("""<div style='text-align: center; margin-bottom: 0.5rem;'>
+    <h2 style='color: #1f77b4; margin-bottom: 0.2rem; font-size: 1.5rem;'>⚽ Player Role Dashboard</h2>
+    <p style='color: #666; font-size: 0.95rem; margin-bottom: 0.3rem;'>Explore player roles and clusters in PCA space</p>
+    <p style='color: #999; font-size: 0.85rem;'><em>Dataset: FM24 • Filtered: Age ≥ 18 • Current Ability ≥ 120</em></p>
 </div>""", unsafe_allow_html=True)
 
 # Search bar with autocomplete
@@ -121,20 +217,27 @@ player_names = sorted(filtered_players_df['Name'].tolist())
 # Create normalized search index (name -> normalized_name)
 search_index = {name: normalize_text(name) for name in player_names}
 
+# Initialize session state
+if 'selected_player' not in st.session_state:
+    st.session_state.selected_player = None
+if 'search_query' not in st.session_state:
+    st.session_state.search_query = ""
+
 # Text input for search
 search_query = st.text_input(
     "Type player name to search:",
-    value="",
+    value=st.session_state.search_query,
     key="player_search_input",
-    placeholder="Start typing a player name..."
+    placeholder="Start typing a player name (e.g., 'odegaard' finds 'Ødegaard')..."
 )
 
-# Initialize session state for selected player
-if 'selected_player' not in st.session_state:
-    st.session_state.selected_player = None
+# Update session state
+st.session_state.search_query = search_query
 
 # Filter and show suggestions
 selected_player_name = None
+matching_players = []
+
 if search_query:
     # Normalize search query
     normalized_query = normalize_text(search_query)
@@ -146,20 +249,51 @@ if search_query:
     ]
     
     if matching_players:
-        # Always show dropdown with suggestions (even if only one match)
-        # This makes it clearer what was selected
-        selected_player_name = st.selectbox(
-            f"Select from {len(matching_players)} match{'es' if len(matching_players) > 1 else ''}:",
-            options=matching_players,
-            key="player_autocomplete",
-            index=0  # Auto-select first match
-        )
-        st.session_state.selected_player = selected_player_name
+        # Show autocomplete suggestions as clickable buttons
+        st.markdown(f"<p style='color: #666; font-size: 0.9rem; margin-top: 0.5rem; margin-bottom: 0.5rem;'><b>{len(matching_players)}</b> match{'es' if len(matching_players) > 1 else ''} found:</p>", unsafe_allow_html=True)
+        
+        # Display suggestions in a grid
+        cols_per_row = 3
+        for i in range(0, min(len(matching_players), 9), cols_per_row):  # Show max 9 suggestions
+            cols = st.columns(cols_per_row)
+            for j, col in enumerate(cols):
+                if i + j < len(matching_players):
+                    player_name = matching_players[i + j]
+                    with col:
+                        # Highlight if this is the selected player
+                        is_selected = (st.session_state.selected_player == player_name)
+                        button_style = "background-color: #1f77b4; color: white;" if is_selected else "background-color: #f0f0f0; color: #333;"
+                        if st.button(
+                            player_name,
+                            key=f"player_btn_{i+j}",
+                            use_container_width=True
+                        ):
+                            st.session_state.selected_player = player_name
+                            st.session_state.search_query = player_name
+                            st.rerun()
+        
+        # If more than 9 matches, show message
+        if len(matching_players) > 9:
+            st.info(f"... and {len(matching_players) - 9} more. Type more characters to narrow down.")
+        
+        # Auto-select first match if only one result
+        if len(matching_players) == 1:
+            st.session_state.selected_player = matching_players[0]
+            selected_player_name = matching_players[0]
+        elif st.session_state.selected_player in matching_players:
+            selected_player_name = st.session_state.selected_player
+        else:
+            # Clear selection if current selection is not in matches
+            st.session_state.selected_player = None
     else:
-        st.info(f"No players found matching '{search_query}'")
+        st.info(f"No players found matching '{search_query}'. Try typing 'odegaard' to find 'Ødegaard'.")
         st.session_state.selected_player = None
 else:
     st.session_state.selected_player = None
+
+# Set selected player
+if st.session_state.selected_player:
+    selected_player_name = st.session_state.selected_player
 
 # Main layout: Scatter plot and player card
 col1, col2 = st.columns([2, 1])
@@ -223,12 +357,15 @@ with col2:
             st.markdown("<div style='margin: 2rem 0;'></div>", unsafe_allow_html=True)
             
             # Similar players
-            st.markdown("<h3 style='color: #333;'>🎯 Similar Players</h3>", unsafe_allow_html=True)
+            st.markdown("<h3 style='color: #333; margin-top: 1.5rem;'>🎯 Similar Players</h3>", unsafe_allow_html=True)
+            st.markdown("<p style='color: #666; font-size: 0.9rem; margin-bottom: 1rem;'>Players in the same cluster with closest PCA distance</p>", unsafe_allow_html=True)
             similar = find_similar_players(player_row, filtered_players_df, n=5)
             
             if not similar.empty:
                 for idx, sim_player in similar.iterrows():
-                    with st.expander(f"⭐ {sim_player['Name']} ({sim_player.get('Club', 'N/A')})"):
+                    cluster_id = int(sim_player['role_cluster'])
+                    cluster_label = get_cluster_name(cluster_id)
+                    with st.expander(f"⭐ {sim_player['Name']} ({sim_player.get('Club', 'N/A')}) - {cluster_label}"):
                         col_sim1, col_sim2, col_sim3 = st.columns(3)
                         with col_sim1:
                             st.metric("CA", int(sim_player['CA']))
@@ -268,14 +405,18 @@ with col2:
         else:
             st.warning("Player not found in filtered data.")
     else:
-        st.info("👆 Search for a player above to see their details here")
         st.markdown("""
-        **Player Card will show:**
-        - Basic info (CA, PA, Club)
-        - Primary role and cluster memberships
-        - Similar players
-        - Attribute radar chart
-        """)
+        <div style='background-color: #f8f9fa; padding: 2rem; border-radius: 8px; border-left: 4px solid #1f77b4; text-align: center;'>
+            <p style='font-size: 1.2rem; color: #666; margin-bottom: 1rem;'>👆 Search for a player above</p>
+            <p style='color: #999; font-size: 0.95rem;'>The player card will display:</p>
+            <ul style='text-align: left; color: #666; margin-top: 1rem; padding-left: 2rem;'>
+                <li>Basic info (CA, PA, Club)</li>
+                <li>Primary role and cluster memberships</li>
+                <li>Similar players in PCA space</li>
+                <li>Attribute radar chart vs cluster centroid</li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
 
 # Footer
 st.markdown("---")
