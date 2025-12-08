@@ -5,19 +5,19 @@ from typing import Dict, Tuple
 
 
 CLUSTER_NAMES: Dict[int, str] = {
-    0: "Deep Controller",
-    1: "Final-Third Creator",
+    0: "Deep-Lying Playmaker",
+    1: "Creative Playmaker",
     2: "Defensive Anchor",
-    3: "Wide Attacker",
-    4: "Box-to-Box Engine"
+    3: "Box-to-Box Midfielder",
+    4: "Attacking Playmaker"
 }
 
 CLUSTER_DESCRIPTIONS: Dict[int, str] = {
-    0: "Deep-lying playmakers who control the tempo from deeper positions. Strong passing, vision, and positioning.",
-    1: "Creative players who operate in the final third. Excellent passing, vision, and technical ability.",
-    2: "Defensive specialists who anchor the team. Strong physical attributes, tackling, marking, and positioning.",
-    3: "Wide attacking players with pace, dribbling, and finishing ability. Operate in wide areas and attack spaces.",
-    4: "Dynamic midfielders who cover ground. Balance of defensive and attacking attributes with good stamina."
+    0: "Deep-lying midfielders who control tempo from deeper positions. Strong positioning, tackling, passing, and composure. Examples: Kimmich, Koke, Tonali.",
+    1: "Highly technical creative players with exceptional passing, vision, and decision-making. Low physicality but elite technical skills. Examples: Modrić, Ødegaard, de Jong.",
+    2: "Defensive specialists who anchor the team. Exceptional marking, tackling, bravery, strength, and positioning. Low technical/creative attributes. Examples: Rice, Casemiro, Camavinga.",
+    3: "Dynamic, energetic midfielders with pace and work rate. High off-the-ball movement but lower decision-making and composure. Examples: Bellingham, Valverde, Barella.",
+    4: "Advanced attacking players with high flair, dribbling, technique, and creativity. Excellent at free kicks, corners, and set pieces. Low defensive attributes. Examples: Bruno Fernandes, Sané, Nkunku."
 }
 
 
