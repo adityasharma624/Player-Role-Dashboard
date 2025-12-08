@@ -51,16 +51,11 @@ st.markdown("""
         margin-bottom: 1rem;
     }
     
-    /* Style dividers */
-    hr {
-        margin: 2rem 0 !important;
-    }
-    
     /* Card-like appearance for subheaders */
     h2 {
         color: #1f77b4;
         padding-bottom: 0.5rem;
-        border-bottom: 2px solid #e0e0e0;
+        border-bottom: 1px solid #e0e0e0;
         margin-top: 1.5rem;
         margin-bottom: 0.5rem;
     }
@@ -97,8 +92,7 @@ def load_data():
 
 players_df, centroids_df, centroids_dict = load_data()
 
-# Sidebar title
-st.sidebar.markdown("---")
+# Sidebar
 st.sidebar.header("🔍 Filters")
 
 # Cluster filter
