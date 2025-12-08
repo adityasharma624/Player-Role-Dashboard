@@ -80,10 +80,10 @@ st.markdown("""
         padding: 10px 20px;
     }
     
-    /* Hide Streamlit menu and footer */
+    /* Hide Streamlit menu and footer, but keep sidebar toggle */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
-    header {visibility: hidden;}
+    /* Keep header visible for sidebar toggle button */
     </style>
     """, unsafe_allow_html=True)
 
