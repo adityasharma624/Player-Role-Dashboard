@@ -6,6 +6,7 @@ import plotly.express as px
 import pandas as pd
 import numpy as np
 from typing import Optional, Dict, List
+from utils.cluster_mapping import get_cluster_name
 
 
 def create_scatter_plot(players_df: pd.DataFrame, 
@@ -41,11 +42,13 @@ def create_scatter_plot(players_df: pd.DataFrame,
         is_selected = (highlight_cluster is not None and cluster_id == highlight_cluster)
         opacity = 1.0 if is_selected else 0.6
         
+        cluster_name = get_cluster_name(cluster_id)
+        
         fig.add_trace(go.Scatter(
             x=cluster_data['pc1'],
             y=cluster_data['pc2'],
             mode='markers',
-            name=f'Cluster {cluster_id}',
+            name=f'{cluster_name} (C{cluster_id})',
             marker=dict(
                 color=cluster_colors.get(cluster_id, '#888888'),
                 size=8,
@@ -53,7 +56,7 @@ def create_scatter_plot(players_df: pd.DataFrame,
                 line=dict(width=0.5, color='white')
             ),
             text=cluster_data.apply(
-                lambda row: f"<b>{row['Name']}</b><br>Club: {row.get('Club', 'N/A')}<br>Cluster: {row['role_cluster']}",
+                lambda row: f"<b>{row['Name']}</b><br>Club: {row.get('Club', 'N/A')}<br>Role: {cluster_name}",
                 axis=1
             ),
             hovertemplate='%{text}<extra></extra>',
@@ -92,12 +95,29 @@ def create_scatter_plot(players_df: pd.DataFrame,
         hovermode='closest',
         template='plotly_white',
         height=600,
+        font=dict(size=12),
+        margin=dict(l=60, r=40, t=60, b=60),
+        plot_bgcolor='#f8f9fa',
+        paper_bgcolor='white',
         legend=dict(
             orientation="h",
             yanchor="bottom",
             y=1.02,
             xanchor="right",
-            x=1
+            x=1,
+            bgcolor='rgba(255, 255, 255, 0.8)',
+            bordercolor='#e0e0e0',
+            borderwidth=1
+        ),
+        xaxis=dict(
+            showgrid=True,
+            gridwidth=1,
+            gridcolor='#f0f0f0'
+        ),
+        yaxis=dict(
+            showgrid=True,
+            gridwidth=1,
+            gridcolor='#f0f0f0'
         )
     )
     
@@ -173,11 +193,22 @@ def create_radar_chart(player_attrs: Dict[str, float],
                 range=[0, 20],
                 tickmode='linear',
                 tick0=0,
-                dtick=5
-            )),
+                dtick=5,
+                gridcolor='#f0f0f0'
+            ),
+            bgcolor='rgba(240, 240, 240, 0.3)'
+        ),
         showlegend=True,
         title=title,
-        height=400
+        height=400,
+        font=dict(size=11),
+        margin=dict(l=50, r=50, t=60, b=50),
+        paper_bgcolor='white',
+        legend=dict(
+            bgcolor='rgba(255, 255, 255, 0.8)',
+            bordercolor='#e0e0e0',
+            borderwidth=1
+        )
     )
     
     return fig
@@ -188,6 +219,8 @@ def create_cluster_scatter_snippet(players_df: pd.DataFrame, cluster_id: int) ->
     cluster_data = players_df[players_df['role_cluster'] == cluster_id]
     
     fig = go.Figure()
+    
+    cluster_name = get_cluster_name(cluster_id)
     
     fig.add_trace(go.Scatter(
         x=cluster_data['pc1'],
@@ -203,12 +236,16 @@ def create_cluster_scatter_snippet(players_df: pd.DataFrame, cluster_id: int) ->
     ))
     
     fig.update_layout(
-        title=f'Cluster {cluster_id} Players',
+        title=f'{cluster_name} Players',
         xaxis_title='PC1',
         yaxis_title='PC2',
         height=250,
         margin=dict(l=40, r=40, t=40, b=40),
-        template='plotly_white'
+        template='plotly_white',
+        font=dict(size=10),
+        plot_bgcolor='#f8f9fa',
+        xaxis=dict(showgrid=True, gridwidth=1, gridcolor='#f0f0f0'),
+        yaxis=dict(showgrid=True, gridwidth=1, gridcolor='#f0f0f0')
     )
     
     return fig
