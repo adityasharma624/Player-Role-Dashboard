@@ -22,26 +22,43 @@ st.set_page_config(
 # Custom CSS for consistent styling
 st.markdown("""
     <style>
-    /* Consistent styling with main page */
+    /* Consistent styling with main page - compact */
+    .main {
+        padding-top: 0.5rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    .element-container {
+        margin-bottom: 0.5rem;
+    }
+    
+    .stMarkdown {
+        margin-bottom: 0.5rem;
+    }
+    
     h1 {
         color: #1f77b4;
-        text-align: center;
-        margin-bottom: 1rem;
+        margin-bottom: 0.5rem;
+        font-size: 1.8rem;
     }
     
     h2 {
         color: #1f77b4;
-        padding-bottom: 0.5rem;
+        padding-bottom: 0.3rem;
         border-bottom: 2px solid #e0e0e0;
-        margin-top: 1.5rem;
-        margin-bottom: 0.5rem;
+        margin-top: 1rem;
+        margin-bottom: 0.3rem;
         font-weight: 600;
+        font-size: 1.3rem;
     }
     
     h3 {
         color: #333;
-        margin-top: 1rem;
+        margin-top: 0.8rem;
+        margin-bottom: 0.3rem;
         font-weight: 600;
+        font-size: 1.1rem;
     }
     
     /* Metric styling */
@@ -82,11 +99,14 @@ def load_data():
 
 players_df, centroids_df, centroids_dict = load_data()
 
+# Pages heading
+st.markdown("<h1 style='color: #1f77b4; margin-bottom: 0.5rem; font-size: 1.8rem;'>Pages</h1>", unsafe_allow_html=True)
+
 # Title
 st.markdown("""
-    <div style='text-align: center; margin-bottom: 2rem;'>
-        <h1 style='color: #1f77b4; margin-bottom: 0.5rem;'>📊 Cluster Information & Role Documentation</h1>
-        <p style='color: #666; font-size: 1.1rem;'>Learn about each player role cluster and their characteristics</p>
+    <div style='text-align: center; margin-bottom: 1rem;'>
+        <h2 style='color: #1f77b4; margin-bottom: 0.3rem; font-size: 1.5rem;'>📊 Cluster Information & Role Documentation</h2>
+        <p style='color: #666; font-size: 0.95rem;'>Learn about each player role cluster and their characteristics</p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -130,7 +150,7 @@ for idx, cluster_id in enumerate(all_clusters):
                 with st.expander("View all attributes"):
                     st.dataframe(attrs_df, width='stretch', hide_index=True)
             
-            st.divider()
+            st.markdown("<div style='margin: 0.5rem 0;'></div>", unsafe_allow_html=True)
             
             # Top players in cluster
             st.markdown("<h3 style='color: #333; margin-top: 1.5rem;'>⭐ Top Players by CA</h3>", unsafe_allow_html=True)
@@ -170,7 +190,7 @@ for idx, cluster_id in enumerate(all_clusters):
             st.metric("Avg CA", f"{avg_ca:.1f}")
             st.metric("Avg PA", f"{avg_pa:.1f}")
         
-        st.divider()
+        st.markdown("<div style='margin: 1rem 0;'></div>", unsafe_allow_html=True)
         
         # Radar chart for cluster centroid
         st.subheader("Role Profile (Cluster Centroid)")

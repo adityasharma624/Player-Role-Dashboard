@@ -81,27 +81,37 @@ st.markdown("""
     /* Main content padding - reduced top padding */
     .main {
         padding-top: 0.5rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
     }
     
-    /* Improve spacing between sections */
+    /* Improve spacing between sections - more compact */
     .element-container {
-        margin-bottom: 1rem;
+        margin-bottom: 0.5rem;
     }
     
-    /* Card-like appearance for subheaders */
+    /* Reduce spacing in markdown */
+    .stMarkdown {
+        margin-bottom: 0.5rem;
+    }
+    
+    /* Card-like appearance for subheaders - more compact */
     h2 {
         color: #1f77b4;
-        padding-bottom: 0.5rem;
+        padding-bottom: 0.3rem;
         border-bottom: 2px solid #e0e0e0;
-        margin-top: 1.5rem;
-        margin-bottom: 0.5rem;
+        margin-top: 1rem;
+        margin-bottom: 0.3rem;
         font-weight: 600;
+        font-size: 1.3rem;
     }
     
     h3 {
         color: #333;
-        margin-top: 1rem;
+        margin-top: 0.8rem;
+        margin-bottom: 0.3rem;
         font-weight: 600;
+        font-size: 1.1rem;
     }
     
     /* Metric styling */
@@ -211,7 +221,7 @@ st.markdown("""<div style='text-align: center; margin-bottom: 0.5rem;'>
 </div>""", unsafe_allow_html=True)
 
 # Search bar with autocomplete
-st.markdown("<h2 style='margin-top: 2rem; margin-bottom: 1rem;'>🔎 Search Player</h2>", unsafe_allow_html=True)
+st.markdown("<h2 style='margin-top: 1rem; margin-bottom: 0.5rem;'>🔎 Search Player</h2>", unsafe_allow_html=True)
 player_names = sorted(filtered_players_df['Name'].tolist())
 
 # Create normalized search index (name -> normalized_name)
@@ -299,7 +309,7 @@ if st.session_state.selected_player:
 col1, col2 = st.columns([2, 1])
 
 with col1:
-    st.markdown("<h2 style='margin-bottom: 1.5rem;'>📊 Player Clusters in PCA Space</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='margin-bottom: 0.5rem;'>📊 Player Clusters in PCA Space</h2>", unsafe_allow_html=True)
     
     # Create scatter plot
     fig = create_scatter_plot(
@@ -313,7 +323,7 @@ with col1:
     st.markdown("<p style='text-align: center; color: #666; margin-top: 1rem;'>🎯 Hover over clusters to explore • Search above to zoom to a player</p>", unsafe_allow_html=True)
 
 with col2:
-    st.markdown("<h2 style='margin-bottom: 1.5rem;'>👤 Player Information</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='margin-bottom: 0.5rem;'>👤 Player Information</h2>", unsafe_allow_html=True)
     
     if st.session_state.selected_player:
         # Get player data
@@ -332,7 +342,7 @@ with col2:
             with col_info2:
                 st.metric("Potential Ability", int(player_row['PA']))
             
-            st.markdown("<div style='margin: 1.5rem 0;'></div>", unsafe_allow_html=True)
+            st.markdown("<div style='margin: 0.8rem 0;'></div>", unsafe_allow_html=True)
             
             # Club
             if pd.notna(player_row.get('Club')):
@@ -343,7 +353,7 @@ with col2:
             cluster_name = get_cluster_name(primary_cluster)
             st.markdown(f"<p style='font-size: 1rem; margin: 0.5rem 0;'><b>⚙️ Primary Role:</b> {cluster_name}</p>", unsafe_allow_html=True)
             
-            st.markdown("<div style='margin: 1rem 0;'></div>", unsafe_allow_html=True)
+            st.markdown("<div style='margin: 0.5rem 0;'></div>", unsafe_allow_html=True)
             
             # Top 3 cluster probabilities
             st.markdown("<b style='font-size: 1.1rem;'>📈 Cluster Memberships</b>", unsafe_allow_html=True)
@@ -357,7 +367,7 @@ with col2:
             st.markdown("<div style='margin: 2rem 0;'></div>", unsafe_allow_html=True)
             
             # Similar players
-            st.markdown("<h3 style='color: #333; margin-top: 1.5rem;'>🎯 Similar Players</h3>", unsafe_allow_html=True)
+            st.markdown("<h3 style='color: #333; margin-top: 0.8rem;'>🎯 Similar Players</h3>", unsafe_allow_html=True)
             st.markdown("<p style='color: #666; font-size: 0.9rem; margin-bottom: 1rem;'>Players in the same cluster with closest PCA distance</p>", unsafe_allow_html=True)
             similar = find_similar_players(player_row, filtered_players_df, n=5)
             
@@ -376,10 +386,10 @@ with col2:
             else:
                 st.info("No similar players found.")
             
-            st.markdown("<div style='margin: 2rem 0;'></div>", unsafe_allow_html=True)
+            st.markdown("<div style='margin: 1rem 0;'></div>", unsafe_allow_html=True)
             
             # Player attributes radar chart
-            st.markdown("<h3 style='color: #333;'>📉 Player Attributes</h3>", unsafe_allow_html=True)
+            st.markdown("<h3 style='color: #333; margin-top: 0.8rem;'>📉 Player Attributes</h3>", unsafe_allow_html=True)
             
             # Get player attributes (FM attributes)
             fm_attrs = [
@@ -420,5 +430,5 @@ with col2:
 
 # Footer
 st.markdown("---")
-st.markdown("<p style='text-align: center; color: #999; font-size: 0.9rem; margin-top: 2rem;'>Data: Player role clusters with PCA coordinates | Navigate to <b>'Cluster Info'</b> page for role documentation</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: #999; font-size: 0.9rem; margin-top: 1rem;'>Data: Player role clusters with PCA coordinates | Navigate to <b>'Cluster Info'</b> page for role documentation</p>", unsafe_allow_html=True)
 
