@@ -98,7 +98,6 @@ def load_data():
 players_df, centroids_df, centroids_dict = load_data()
 
 # Sidebar title
-st.sidebar.markdown("""<h1 style='color: #1f77b4; text-align: center;'>⚽ Player Role Dashboard</h1>""", unsafe_allow_html=True)
 st.sidebar.markdown("---")
 st.sidebar.header("🔍 Filters")
 
@@ -115,9 +114,10 @@ selected_clusters = st.sidebar.multiselect(
 filtered_players_df = players_df[players_df['role_cluster'].isin(selected_clusters)]
 
 # Main title and subtitle
-st.markdown("""<div style='text-align: center; margin-bottom: 2rem;'>
-    <h1 style='color: #1f77b4; margin-bottom: 0.5rem;'>⚽ Player Role Dashboard</h1>
-    <p style='color: #666; font-size: 1.1rem;'>Explore player roles and clusters in PCA space</p>
+st.markdown("""<div style='text-align: center; margin-bottom: 1rem;'>
+    <h1 style='color: #1f77b4; margin-bottom: 0.3rem;'>⚽ Player Role Dashboard</h1>
+    <p style='color: #666; font-size: 1.1rem; margin-bottom: 0.5rem;'>Explore player roles and clusters in PCA space</p>
+    <p style='color: #999; font-size: 0.9rem;'><em>Dataset: FM24 • Filtered: Age ≥ 18 • Current Ability ≥ 120</em></p>
 </div>""", unsafe_allow_html=True)
 
 # Search bar with autocomplete
