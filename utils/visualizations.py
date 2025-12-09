@@ -7,6 +7,27 @@ import pandas as pd
 import numpy as np
 from typing import Optional, Dict, List
 from utils.cluster_mapping import get_cluster_name
+import streamlit as st
+
+
+def get_plotly_template():
+    """Get Plotly template based on Streamlit theme."""
+    try:
+        # Try to get Streamlit theme from config
+        theme = st.get_option("theme.base")
+        if theme == "dark":
+            return "plotly_dark"
+        else:
+            return "plotly"
+    except:
+        # Fallback: try to detect from HTML
+        try:
+            # Check if dark mode is preferred
+            import streamlit.web.server.websocket_headers as ws_headers
+            # This is a workaround - we'll use a more reliable method
+            return "plotly"
+        except:
+            return "plotly"
 
 
 def create_scatter_plot(players_df: pd.DataFrame, 
@@ -93,14 +114,17 @@ def create_scatter_plot(players_df: pd.DataFrame,
             fig.update_xaxes(range=pc1_range)
             fig.update_yaxes(range=pc2_range)
     
+    # Get theme-appropriate template
+    template = get_plotly_template()
+    
     fig.update_layout(
         title=None,
         xaxis_title='PC1',
         yaxis_title='PC2',
         hovermode='closest',
-        template='plotly',  # Adapts to dark/light mode
+        template=template,  # Use theme-appropriate template
         height=600,
-        font=dict(size=12, family='Arial, sans-serif', color=None),  # Let Plotly handle color
+        font=dict(size=12, family='Arial, sans-serif'),
         margin=dict(l=60, r=40, t=50, b=60),
         plot_bgcolor='rgba(0,0,0,0)',  # Transparent - adapts to theme
         paper_bgcolor='rgba(0,0,0,0)',  # Transparent - adapts to theme
@@ -110,41 +134,30 @@ def create_scatter_plot(players_df: pd.DataFrame,
             y=0.01,
             xanchor="right",
             x=0.99,
-            bgcolor='rgba(255, 255, 255, 0.85)',  # Semi-transparent - works in both modes
+            bgcolor='rgba(255, 255, 255, 0.85)' if template == 'plotly' else 'rgba(0, 0, 0, 0.85)',
             bordercolor='#1f77b4',
             borderwidth=2,
-            font=dict(size=10, color=None)  # Let Plotly handle color
+            font=dict(size=10)
         ),
         xaxis=dict(
             showgrid=True,
             gridwidth=1,
-            gridcolor=None,  # Use template default
             zeroline=False,
             showline=True,
             linewidth=2,
-            linecolor=None,  # Use template default
-            mirror=True,
-            title_font=dict(color=None),  # Adapts to theme
-            tickfont=dict(color=None)  # Adapts to theme
+            mirror=True
         ),
         yaxis=dict(
             showgrid=True,
             gridwidth=1,
-            gridcolor=None,  # Use template default
             zeroline=False,
             showline=True,
             linewidth=2,
-            linecolor=None,  # Use template default
-            mirror=True,
-            title_font=dict(color=None),  # Adapts to theme
-            tickfont=dict(color=None)  # Adapts to theme
+            mirror=True
         ),
         hoverlabel=dict(
-            bgcolor=None,  # Use template default
-            bordercolor=None,  # Use template default
             font_size=13,
-            font_family='Arial',
-            font_color=None  # Use template default
+            font_family='Arial'
         )
     )
     
@@ -213,6 +226,9 @@ def create_radar_chart(player_attrs: Dict[str, float],
             fillcolor='rgba(255, 127, 14, 0.3)'
         ))
     
+    # Get theme-appropriate template
+    template = get_plotly_template()
+    
     fig.update_layout(
         polar=dict(
             radialaxis=dict(
@@ -220,34 +236,26 @@ def create_radar_chart(player_attrs: Dict[str, float],
                 range=[0, 20],
                 tickmode='linear',
                 tick0=0,
-                dtick=5,
-                gridcolor=None,  # Use template default
-                linecolor=None,  # Use template default
-                tickfont=dict(color=None),  # Adapts to theme
-                title_font=dict(color=None)  # Adapts to theme
+                dtick=5
             ),
-            angularaxis=dict(
-                tickfont=dict(color=None),  # Adapts to theme
-                linecolor=None  # Use template default
-            ),
+            angularaxis=dict(),
             bgcolor='rgba(0,0,0,0)'  # Transparent - adapts to theme
         ),
-        template='plotly',  # Adapts to dark/light mode
+        template=template,  # Use theme-appropriate template
         showlegend=True,
         title=dict(
             text=title,
-            font=dict(size=14, color=None)  # Adapts to theme
+            font=dict(size=14)
         ),
         height=400,
-        font=dict(size=11, color=None),  # Let Plotly handle color
+        font=dict(size=11),
         margin=dict(l=50, r=50, t=60, b=50),
         paper_bgcolor='rgba(0,0,0,0)',  # Transparent - adapts to theme
         plot_bgcolor='rgba(0,0,0,0)',  # Transparent - adapts to theme
         legend=dict(
-            bgcolor='rgba(255, 255, 255, 0.9)',  # Semi-transparent white
+            bgcolor='rgba(255, 255, 255, 0.9)' if template == 'plotly' else 'rgba(0, 0, 0, 0.9)',
             bordercolor='#e0e0e0',
-            borderwidth=1,
-            font=dict(color=None)  # Adapts to theme
+            borderwidth=1
         )
     )
     
