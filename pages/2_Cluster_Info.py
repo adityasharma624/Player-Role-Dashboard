@@ -130,10 +130,12 @@ components.html("""
     setInterval(adaptPlotlyCharts, 3000);
     
     const observer = new MutationObserver(adaptPlotlyCharts);
-    observer.observe(window.parent.document.body, { childList: true, subtree: true });
+    if (window.parent.document.body) {
+        observer.observe(window.parent.document.body, { childList: true, subtree: true });
+    }
 })();
 </script>
-""", height=0, key='plotly_theme_adapter_cluster')
+""", height=0)
 
 # Load data (cached)
 @st.cache_data

@@ -241,7 +241,6 @@ components.html("""
 (function() {
     function adaptPlotlyCharts() {
         try {
-            // Get Streamlit app background
             const appContainer = window.parent.document.querySelector('[data-testid="stAppViewContainer"]');
             if (!appContainer) return;
             
@@ -253,30 +252,24 @@ components.html("""
             const brightness = (parseInt(rgb[0]) + parseInt(rgb[1]) + parseInt(rgb[2])) / 3;
             const isDark = brightness < 128;
             
-            // Update all Plotly charts
             window.parent.document.querySelectorAll('.js-plotly-plot').forEach(function(plotDiv) {
                 if (plotDiv.data) {
-                    const update = {
-                        'template': isDark ? 'plotly_dark' : 'plotly'
-                    };
-                    Plotly.relayout(plotDiv, update);
+                    Plotly.relayout(plotDiv, {'template': isDark ? 'plotly_dark' : 'plotly'});
                 }
             });
-        } catch(e) {
-            // Silently fail
-        }
+        } catch(e) {}
     }
     
-    // Run after a delay to ensure charts are rendered
     setTimeout(adaptPlotlyCharts, 1000);
     setInterval(adaptPlotlyCharts, 3000);
     
-    // Also run when DOM changes
     const observer = new MutationObserver(adaptPlotlyCharts);
-    observer.observe(window.parent.document.body, { childList: true, subtree: true });
+    if (window.parent.document.body) {
+        observer.observe(window.parent.document.body, { childList: true, subtree: true });
+    }
 })();
 </script>
-""", height=0, key='plotly_theme_adapter')
+""", height=0)
 
 # Load data (cached)
 @st.cache_data
