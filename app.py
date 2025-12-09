@@ -180,6 +180,19 @@ st.markdown("""
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     /* Keep header visible for sidebar toggle button */
+    
+    /* Dark mode support for Plotly charts */
+    @media (prefers-color-scheme: dark) {
+        /* Ensure Plotly charts are visible in dark mode */
+        .js-plotly-plot {
+            background-color: transparent;
+        }
+        
+        /* Make sure text in charts is visible */
+        .plotly .modebar {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+    }
     </style>
     """, unsafe_allow_html=True)
 

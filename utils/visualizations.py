@@ -98,47 +98,53 @@ def create_scatter_plot(players_df: pd.DataFrame,
         xaxis_title='PC1',
         yaxis_title='PC2',
         hovermode='closest',
-        template='plotly_white',
+        template='plotly',  # Adapts to dark/light mode
         height=600,
-        font=dict(size=12, family='Arial, sans-serif'),
+        font=dict(size=12, family='Arial, sans-serif', color=None),  # Let Plotly handle color
         margin=dict(l=60, r=40, t=50, b=60),
-        plot_bgcolor='#f8f9fa',
-        paper_bgcolor='white',
+        plot_bgcolor='rgba(0,0,0,0)',  # Transparent - adapts to theme
+        paper_bgcolor='rgba(0,0,0,0)',  # Transparent - adapts to theme
         legend=dict(
             orientation="v",
             yanchor="bottom",
             y=0.01,
             xanchor="right",
             x=0.99,
-            bgcolor='rgba(255, 255, 255, 0.95)',
+            bgcolor='rgba(255, 255, 255, 0.85)',  # Semi-transparent - works in both modes
             bordercolor='#1f77b4',
             borderwidth=2,
-            font=dict(size=10)
+            font=dict(size=10, color=None)  # Let Plotly handle color
         ),
         xaxis=dict(
             showgrid=True,
             gridwidth=1,
-            gridcolor='#e8e8e8',
+            gridcolor=None,  # Use template default
             zeroline=False,
             showline=True,
             linewidth=2,
-            linecolor='#333',
-            mirror=True
+            linecolor=None,  # Use template default
+            mirror=True,
+            title_font=dict(color=None),  # Adapts to theme
+            tickfont=dict(color=None)  # Adapts to theme
         ),
         yaxis=dict(
             showgrid=True,
             gridwidth=1,
-            gridcolor='#e8e8e8',
+            gridcolor=None,  # Use template default
             zeroline=False,
             showline=True,
             linewidth=2,
-            linecolor='#333',
-            mirror=True
+            linecolor=None,  # Use template default
+            mirror=True,
+            title_font=dict(color=None),  # Adapts to theme
+            tickfont=dict(color=None)  # Adapts to theme
         ),
         hoverlabel=dict(
-            bgcolor='white',
+            bgcolor=None,  # Use template default
+            bordercolor=None,  # Use template default
             font_size=13,
-            font_family='Arial'
+            font_family='Arial',
+            font_color=None  # Use template default
         )
     )
     
@@ -215,20 +221,33 @@ def create_radar_chart(player_attrs: Dict[str, float],
                 tickmode='linear',
                 tick0=0,
                 dtick=5,
-                gridcolor='#f0f0f0'
+                gridcolor=None,  # Use template default
+                linecolor=None,  # Use template default
+                tickfont=dict(color=None),  # Adapts to theme
+                title_font=dict(color=None)  # Adapts to theme
             ),
-            bgcolor='rgba(240, 240, 240, 0.3)'
+            angularaxis=dict(
+                tickfont=dict(color=None),  # Adapts to theme
+                linecolor=None  # Use template default
+            ),
+            bgcolor='rgba(0,0,0,0)'  # Transparent - adapts to theme
         ),
+        template='plotly',  # Adapts to dark/light mode
         showlegend=True,
-        title=title,
+        title=dict(
+            text=title,
+            font=dict(size=14, color=None)  # Adapts to theme
+        ),
         height=400,
-        font=dict(size=11),
+        font=dict(size=11, color=None),  # Let Plotly handle color
         margin=dict(l=50, r=50, t=60, b=50),
-        paper_bgcolor='white',
+        paper_bgcolor='rgba(0,0,0,0)',  # Transparent - adapts to theme
+        plot_bgcolor='rgba(0,0,0,0)',  # Transparent - adapts to theme
         legend=dict(
-            bgcolor='rgba(255, 255, 255, 0.8)',
+            bgcolor='rgba(255, 255, 255, 0.9)',  # Semi-transparent white
             bordercolor='#e0e0e0',
-            borderwidth=1
+            borderwidth=1,
+            font=dict(color=None)  # Adapts to theme
         )
     )
     
@@ -257,16 +276,32 @@ def create_cluster_scatter_snippet(players_df: pd.DataFrame, cluster_id: int) ->
     ))
     
     fig.update_layout(
-        title=f'{cluster_name} Players',
+        title=dict(
+            text=f'{cluster_name} Players',
+            font=dict(size=12, color=None)  # Adapts to theme
+        ),
         xaxis_title='PC1',
         yaxis_title='PC2',
         height=250,
         margin=dict(l=40, r=40, t=40, b=40),
-        template='plotly_white',
-        font=dict(size=10),
-        plot_bgcolor='#f8f9fa',
-        xaxis=dict(showgrid=True, gridwidth=1, gridcolor='#f0f0f0'),
-        yaxis=dict(showgrid=True, gridwidth=1, gridcolor='#f0f0f0')
+        template='plotly',  # Adapts to dark/light mode
+        font=dict(size=10, color=None),  # Let Plotly handle color
+        plot_bgcolor='rgba(0,0,0,0)',  # Transparent - adapts to theme
+        paper_bgcolor='rgba(0,0,0,0)',  # Transparent - adapts to theme
+        xaxis=dict(
+            showgrid=True,
+            gridwidth=1,
+            gridcolor=None,  # Use template default
+            title_font=dict(color=None),  # Adapts to theme
+            tickfont=dict(color=None)  # Adapts to theme
+        ),
+        yaxis=dict(
+            showgrid=True,
+            gridwidth=1,
+            gridcolor=None,  # Use template default
+            title_font=dict(color=None),  # Adapts to theme
+            tickfont=dict(color=None)  # Adapts to theme
+        )
     )
     
     return fig
