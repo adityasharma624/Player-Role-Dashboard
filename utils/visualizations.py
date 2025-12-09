@@ -119,9 +119,9 @@ def create_scatter_plot(players_df: pd.DataFrame,
             y=0.01,
             xanchor="right",
             x=0.99,
-            bgcolor='rgba(255, 255, 255, 0.85)',
-            bordercolor='#1f77b4',
-            borderwidth=2,
+            bgcolor=None,  # Let template handle background (dark/light)
+            bordercolor=None,
+            borderwidth=0,
             font=dict(size=10)
         ),
         xaxis=dict(
@@ -235,9 +235,9 @@ def create_radar_chart(player_attrs: Dict[str, float],
         paper_bgcolor='rgba(0,0,0,0)',  # Transparent - adapts to theme
         plot_bgcolor='rgba(0,0,0,0)',  # Transparent - adapts to theme
         legend=dict(
-            bgcolor='rgba(255, 255, 255, 0.9)',
-            bordercolor='#e0e0e0',
-            borderwidth=1
+            bgcolor=None,  # Let template handle background
+            bordercolor=None,
+            borderwidth=0
         )
     )
     
