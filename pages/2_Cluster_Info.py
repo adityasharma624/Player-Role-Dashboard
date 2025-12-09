@@ -225,7 +225,7 @@ for idx, cluster_id in enumerate(all_clusters):
             # Cluster scatter snippet
             st.subheader("Cluster Visualization")
             cluster_scatter = create_cluster_scatter_snippet(players_df, cluster_id)
-            st.plotly_chart(cluster_scatter, width='stretch')
+            st.plotly_chart(cluster_scatter, width='stretch', config={'displayModeBar': True})
             
             # Cluster statistics
             st.subheader("Statistics")
@@ -260,7 +260,7 @@ for idx, cluster_id in enumerate(all_clusters):
                     cluster_attrs=None,  # Don't compare, just show cluster
                     title=f"{cluster_name} Role Profile"
                 )
-                st.plotly_chart(radar_fig, width='stretch')
+                st.plotly_chart(radar_fig, width='stretch', config={'displayModeBar': True})
             else:
                 st.info("Attribute data not available for radar chart.")
         else:

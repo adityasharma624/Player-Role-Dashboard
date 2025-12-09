@@ -171,6 +171,22 @@ st.markdown("""
     .stWarning {
         border-left: 4px solid #ff9800;
     }
+
+    /* Empty state card */
+    .empty-card {
+        background-color: #f5f5f5;
+        padding: 1.5rem;
+        border-radius: 8px;
+        border-left: 4px solid #1f77b4;
+        text-align: center;
+        color: #444;
+    }
+    .empty-card ul li { color: #444; }
+    .empty-card p { color: #444; }
+
+    /* Plotly modebar always visible */
+    .modebar { opacity: 1 !important; }
+    .modebar-btn { color: inherit !important; }
     
     /* Footer styling */
     footer {
@@ -193,6 +209,13 @@ st.markdown("""
         .plotly .modebar {
             background-color: rgba(255, 255, 255, 0.1);
         }
+        .empty-card {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: #ddd;
+            border-left: 4px solid #1f77b4;
+        }
+        .empty-card ul li { color: #ddd; }
+        .empty-card p { color: #ddd; }
     }
     </style>
     <script>
@@ -495,7 +518,7 @@ with col2:
                 title=f"{player_row['Name']} vs {cluster_name} Centroid"
             )
             
-            st.plotly_chart(radar_fig, width='stretch')
+            st.plotly_chart(radar_fig, width='stretch', config={'displayModeBar': True})
             
         else:
             st.warning("Player not found in filtered data.")
