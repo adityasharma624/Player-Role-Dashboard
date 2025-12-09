@@ -11,23 +11,10 @@ import streamlit as st
 
 
 def get_plotly_template():
-    """Get Plotly template based on Streamlit theme."""
-    try:
-        # Try to get Streamlit theme from config
-        theme = st.get_option("theme.base")
-        if theme == "dark":
-            return "plotly_dark"
-        else:
-            return "plotly"
-    except:
-        # Fallback: try to detect from HTML
-        try:
-            # Check if dark mode is preferred
-            import streamlit.web.server.websocket_headers as ws_headers
-            # This is a workaround - we'll use a more reliable method
-            return "plotly"
-        except:
-            return "plotly"
+    """Get Plotly template - use 'plotly' which adapts to page background."""
+    # Use 'plotly' template which will adapt to transparent backgrounds
+    # The page background will show through, making it theme-aware
+    return 'plotly'
 
 
 def create_scatter_plot(players_df: pd.DataFrame, 
@@ -114,15 +101,13 @@ def create_scatter_plot(players_df: pd.DataFrame,
             fig.update_xaxes(range=pc1_range)
             fig.update_yaxes(range=pc2_range)
     
-    # Get theme-appropriate template
-    template = get_plotly_template()
-    
+    # Use plotly template - will be updated by JavaScript if dark mode detected
     fig.update_layout(
         title=None,
         xaxis_title='PC1',
         yaxis_title='PC2',
         hovermode='closest',
-        template=template,  # Use theme-appropriate template
+        template='plotly',  # Base template, JavaScript will update if needed
         height=600,
         font=dict(size=12, family='Arial, sans-serif'),
         margin=dict(l=60, r=40, t=50, b=60),
@@ -134,7 +119,7 @@ def create_scatter_plot(players_df: pd.DataFrame,
             y=0.01,
             xanchor="right",
             x=0.99,
-            bgcolor='rgba(255, 255, 255, 0.85)' if template == 'plotly' else 'rgba(0, 0, 0, 0.85)',
+            bgcolor='rgba(255, 255, 255, 0.85)',
             bordercolor='#1f77b4',
             borderwidth=2,
             font=dict(size=10)
@@ -226,9 +211,6 @@ def create_radar_chart(player_attrs: Dict[str, float],
             fillcolor='rgba(255, 127, 14, 0.3)'
         ))
     
-    # Get theme-appropriate template
-    template = get_plotly_template()
-    
     fig.update_layout(
         polar=dict(
             radialaxis=dict(
@@ -241,7 +223,7 @@ def create_radar_chart(player_attrs: Dict[str, float],
             angularaxis=dict(),
             bgcolor='rgba(0,0,0,0)'  # Transparent - adapts to theme
         ),
-        template=template,  # Use theme-appropriate template
+        template='plotly',  # Base template, JavaScript will update if needed
         showlegend=True,
         title=dict(
             text=title,
@@ -253,7 +235,7 @@ def create_radar_chart(player_attrs: Dict[str, float],
         paper_bgcolor='rgba(0,0,0,0)',  # Transparent - adapts to theme
         plot_bgcolor='rgba(0,0,0,0)',  # Transparent - adapts to theme
         legend=dict(
-            bgcolor='rgba(255, 255, 255, 0.9)' if template == 'plotly' else 'rgba(0, 0, 0, 0.9)',
+            bgcolor='rgba(255, 255, 255, 0.9)',
             bordercolor='#e0e0e0',
             borderwidth=1
         )
@@ -286,29 +268,23 @@ def create_cluster_scatter_snippet(players_df: pd.DataFrame, cluster_id: int) ->
     fig.update_layout(
         title=dict(
             text=f'{cluster_name} Players',
-            font=dict(size=12, color=None)  # Adapts to theme
+            font=dict(size=12)
         ),
         xaxis_title='PC1',
         yaxis_title='PC2',
         height=250,
         margin=dict(l=40, r=40, t=40, b=40),
-        template='plotly',  # Adapts to dark/light mode
-        font=dict(size=10, color=None),  # Let Plotly handle color
+        template='plotly',  # Base template, JavaScript will update if needed
+        font=dict(size=10),
         plot_bgcolor='rgba(0,0,0,0)',  # Transparent - adapts to theme
         paper_bgcolor='rgba(0,0,0,0)',  # Transparent - adapts to theme
         xaxis=dict(
             showgrid=True,
-            gridwidth=1,
-            gridcolor=None,  # Use template default
-            title_font=dict(color=None),  # Adapts to theme
-            tickfont=dict(color=None)  # Adapts to theme
+            gridwidth=1
         ),
         yaxis=dict(
             showgrid=True,
-            gridwidth=1,
-            gridcolor=None,  # Use template default
-            title_font=dict(color=None),  # Adapts to theme
-            tickfont=dict(color=None)  # Adapts to theme
+            gridwidth=1
         )
     )
     

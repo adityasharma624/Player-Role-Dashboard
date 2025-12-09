@@ -2,6 +2,7 @@
 Cluster Information and Documentation Page.
 """
 import streamlit as st
+import streamlit.components.v1 as components
 import pandas as pd
 from utils.data_loader import load_players_data, load_centroids_data, get_centroids_dict
 from utils.cluster_mapping import (
@@ -99,6 +100,40 @@ st.markdown("""
     }
     </style>
     """, unsafe_allow_html=True)
+
+# Inject JavaScript to make Plotly charts adapt to Streamlit theme
+components.html("""
+<script>
+(function() {
+    function adaptPlotlyCharts() {
+        try {
+            const appContainer = window.parent.document.querySelector('[data-testid="stAppViewContainer"]');
+            if (!appContainer) return;
+            
+            const bgColor = window.getComputedStyle(appContainer).backgroundColor;
+            const rgb = bgColor.match(/\\d+/g);
+            
+            if (!rgb || rgb.length < 3) return;
+            
+            const brightness = (parseInt(rgb[0]) + parseInt(rgb[1]) + parseInt(rgb[2])) / 3;
+            const isDark = brightness < 128;
+            
+            window.parent.document.querySelectorAll('.js-plotly-plot').forEach(function(plotDiv) {
+                if (plotDiv.data) {
+                    Plotly.relayout(plotDiv, {'template': isDark ? 'plotly_dark' : 'plotly'});
+                }
+            });
+        } catch(e) {}
+    }
+    
+    setTimeout(adaptPlotlyCharts, 1000);
+    setInterval(adaptPlotlyCharts, 3000);
+    
+    const observer = new MutationObserver(adaptPlotlyCharts);
+    observer.observe(window.parent.document.body, { childList: true, subtree: true });
+})();
+</script>
+""", height=0, key='plotly_theme_adapter_cluster')
 
 # Load data (cached)
 @st.cache_data

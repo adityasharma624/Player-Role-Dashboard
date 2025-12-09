@@ -2,6 +2,7 @@
 Main Streamlit app for Player Role Dashboard.
 """
 import streamlit as st
+import streamlit.components.v1 as components
 import pandas as pd
 import numpy as np
 import unicodedata
@@ -194,7 +195,88 @@ st.markdown("""
         }
     }
     </style>
+    <script>
+    // Detect Streamlit theme and store in session state
+    function detectTheme() {
+        // Check if Streamlit is in dark mode
+        const root = window.parent.document.querySelector('body');
+        const isDark = root.classList.contains('stApp') && 
+                      (window.parent.document.documentElement.style.colorScheme === 'dark' ||
+                       window.matchMedia('(prefers-color-scheme: dark)').matches ||
+                       root.style.backgroundColor === 'rgb(0, 0, 0)' ||
+                       getComputedStyle(root).backgroundColor === 'rgb(0, 0, 0)');
+        
+        // Try to detect from Streamlit's theme
+        const streamlitTheme = window.parent.document.querySelector('[data-testid="stAppViewContainer"]');
+        if (streamlitTheme) {
+            const bgColor = getComputedStyle(streamlitTheme).backgroundColor;
+            const rgb = bgColor.match(/\\d+/g);
+            if (rgb && rgb.length >= 3) {
+                const brightness = (parseInt(rgb[0]) + parseInt(rgb[1]) + parseInt(rgb[2])) / 3;
+                if (brightness < 128) {
+                    window.parent.postMessage({type: 'streamlit-theme', theme: 'dark'}, '*');
+                    return;
+                }
+            }
+        }
+        
+        window.parent.postMessage({type: 'streamlit-theme', theme: isDark ? 'dark' : 'light'}, '*');
+    }
+    
+    // Run on load and when theme might change
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', detectTheme);
+    } else {
+        detectTheme();
+    }
+    
+    // Also listen for theme changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', detectTheme);
+    </script>
     """, unsafe_allow_html=True)
+
+# Inject JavaScript to make Plotly charts adapt to Streamlit theme
+components.html("""
+<script>
+(function() {
+    function adaptPlotlyCharts() {
+        try {
+            // Get Streamlit app background
+            const appContainer = window.parent.document.querySelector('[data-testid="stAppViewContainer"]');
+            if (!appContainer) return;
+            
+            const bgColor = window.getComputedStyle(appContainer).backgroundColor;
+            const rgb = bgColor.match(/\\d+/g);
+            
+            if (!rgb || rgb.length < 3) return;
+            
+            const brightness = (parseInt(rgb[0]) + parseInt(rgb[1]) + parseInt(rgb[2])) / 3;
+            const isDark = brightness < 128;
+            
+            // Update all Plotly charts
+            window.parent.document.querySelectorAll('.js-plotly-plot').forEach(function(plotDiv) {
+                if (plotDiv.data) {
+                    const update = {
+                        'template': isDark ? 'plotly_dark' : 'plotly'
+                    };
+                    Plotly.relayout(plotDiv, update);
+                }
+            });
+        } catch(e) {
+            // Silently fail
+        }
+    }
+    
+    // Run after a delay to ensure charts are rendered
+    setTimeout(adaptPlotlyCharts, 1000);
+    setInterval(adaptPlotlyCharts, 3000);
+    
+    // Also run when DOM changes
+    const observer = new MutationObserver(adaptPlotlyCharts);
+    observer.observe(window.parent.document.body, { childList: true, subtree: true });
+})();
+</script>
+""", height=0, key='plotly_theme_adapter')
 
 # Load data (cached)
 @st.cache_data
